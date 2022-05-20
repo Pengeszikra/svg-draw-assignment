@@ -6,6 +6,8 @@ export enum TOOL {
   Delete,
   Select,
   BoxSelect,
+  Fill,
+  NoActiveTool,
 }
 
 export enum SHAPE {
@@ -23,11 +25,13 @@ export type TTrinagle = [TCoord, TCoord, TCoord]
 
 export type TPolygon = Array<TCoord>
 
-export interface IState {
-  tool: TOOL;
-  shape: SHAPE | null;
+export interface IDrawState {
   image: Array<SHAPE>;
-
+  points: number[];
+  draw: number[];
+  tool: TOOL;
+  shape: SHAPE;
+  flattenPoints: number[];
 }
 
 const action = (type:string) => ({type});

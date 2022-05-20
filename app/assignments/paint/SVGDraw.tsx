@@ -1,18 +1,25 @@
 import {useEffect, useState, FC} from 'react';
 import {Button} from 'react-bootstrap';
-import { SHAPE, TOOL } from './state/paintState';
+import { IDrawState, SHAPE, TOOL } from './state/paintState';
 import Flatten from '@flatten-js/core';
+import './styles/draw.scss';
+import { Troll } from '../../utils/react-troll-declaration';
+import { useDrawReducer } from './state/useDrawReducer';
 
 export type Tjlog = (any) => string;
 export const jlog:Tjlog = p => JSON.stringify(p);
 
-export const PainterExtra:FC = ({width = window.innerWidth, height = window.innerHeight}) => {
-  const [points, setPoints] = useState([]);
-  const [draw, setDraw] = useState([]);
+export interface ISVGDraw {
+  width:number;
+  height:number;
+}
+
+export const SVGDraw:FC<ISVGDraw> = ({width = global.innerWidth, height = global.innerHeight}) => {
   
-  const [tool, setTool] = useState<TOOL>(TOOL.Draw)
-  const [shape, setShape] = useState<SHAPE>(SHAPE.Line)
-  const [flattenPoints, renderFlattenPoints] = useState<[]>([])
+  const [state, army]:Troll<IDrawState> = useDrawReducer();
+
+  const { points, draw, tool, shape, flattenPoints } = state;
+  const { setPoints, setDraw, setTool, setShape, undoLastDraw, clearAll } = army;
 
   const viewBox = `0 0 ${width} ${height}`;
   const interactions = {
@@ -21,21 +28,19 @@ export const PainterExtra:FC = ({width = window.innerWidth, height = window.inne
       if (draw.length >= 4) setPoints(p => [...p, [...draw]]);
       setDraw([])
     },
-    onMouseMove : ({clientX, clientY}) => draw.length >= 2 && setDraw(([x,y]) => [x, y, clientX, clientY]),
+    onMouseMove : ({clientX, clientY}) => {
+      draw.length >= 2 && setDraw(([x,y]) => [x, y, clientX, clientY])
+    },
   }
 
   const handleClear = event => {
     event.preventDefault();
-    console.log('handleClear')
-    setPoints([]);
-    setDraw([]);
+    clearAll();
   };
 
   const handleUndo = event => {
     event.preventDefault();
-    console.log('handleUndo')
-    setPoints(pts => pts.slice(0, pts.length - 1));
-    setDraw([]);
+    undoLastDraw();
   };
 
   const handFlattenTest = event => {
@@ -77,7 +82,7 @@ export const PainterExtra:FC = ({width = window.innerWidth, height = window.inne
           <polygon points={flattenPoints} />
         </g>
       </svg>
-      <pre className="absolute" style={{top: 0, zIndex:10, position:'absolute', display:'block'}}>
+      <section className="absolute" style={{top: 0, zIndex:10, position:'absolute', display:'block'}}>
         <Button onClick={handleClear} variant="secondary" size="sm">clear</Button>
         <Button onClick={handleUndo} variant="secondary" size="sm">undo</Button>
         
@@ -92,7 +97,7 @@ export const PainterExtra:FC = ({width = window.innerWidth, height = window.inne
         <Button onClick={() => setShape(SHAPE.Circle)} variant={shape === SHAPE.Circle ? "primary" : "secondary"} size="sm">circle</Button>
 
         {/* <Button onClick={handFlattenTest} variant="secondary" size="sm">Flatten test</Button> */}
-      </pre>
+      </section>
     </main>
   )
 }
