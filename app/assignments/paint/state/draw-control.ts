@@ -26,6 +26,7 @@ export const
   REPLAY_DRAWING = action('replay-drawing'),
   STOP_REPLAY = action('stop-replay'),
   
+  CHANGE_DIMENSION = action('change-dimension'),
   SET_DRAW = action('set-draw'),
   SET_POINTS = action('set-points')
 ;
@@ -35,12 +36,15 @@ export const drawInitialState:IDrawState = {
   draw: [],
   tool: TOOL.Draw,
   shape: SHAPE.Line,
+  image: [],
+  width: 300,
+  height: 300
 }
 
 export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
 
 export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Action) => {
-  console.log(state)
+  if (![SET_DRAW].includes(type))  console.log(type, payload, state)
   switch (type) {
     case SELECT_TOOL : return {...state, tool : payload }
     case SELECT_SHAPE : return {...state, shape : payload }
@@ -56,7 +60,7 @@ export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Actio
     case DELETE_ALL_SHAPE : return {...state, _ : payload }
     case REPLAY_DRAWING : return {...state, _ : payload }
     case STOP_REPLAY : return {...state, _ : payload }
-    
+    case CHANGE_DIMENSION : return {...state, width: payload?.width, height: payload?.height }
     case SET_DRAW : return {...state, draw : likeUseState(payload, state.draw) }
     case SET_POINTS : return {...state, points : likeUseState(payload, state.points) }
 

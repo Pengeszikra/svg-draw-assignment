@@ -1,32 +1,34 @@
-import { FC} from 'react';
+import { FC, useEffect, useRef} from 'react';
 import './styles/draw.scss';
 import { IDrawState } from './state/paintState';
-import Flatten from '@flatten-js/core';
 import { Troll } from '../../utils/react-troll-declaration';
 import { useDrawReducer } from './state/useDrawReducer';
 import { ToolBar } from './component/ToolBar';
 import { DrawLine } from './component/DrawLine';
 
-export type Tjlog = (any) => string;
-export const jlog:Tjlog = p => JSON.stringify(p);
-
-
 const BACKGROUND_COLOR:string = '#222';
-const DRAW_COLOR:string = '#AAF';
 
-export interface ISVGDraw {
-  width:number;
-  height:number;
-}
+export const SVGDraw:FC = () => {
 
-export const SVGDraw:FC<ISVGDraw> = ({width = global.innerWidth, height = global.innerHeight}) => {
-  
   const [state, army]:Troll<IDrawState> = useDrawReducer();
 
+  const {width, height, draw} = state;
+  const {changeDimension} = army;
+
+  const areaRef = useRef(null);
+
+  useEffect(() => {
+    if (!areaRef.current) return null;
+    changeDimension(areaRef.current.parentElement.getBoundingClientRect())
+  }, [areaRef]);
+
   return (
-    <section style={{height, background:BACKGROUND_COLOR, position:'relative'}}>
+    <section ref={areaRef} style={{width, height, background:BACKGROUND_COLOR, position:'relative'}}>
       <DrawLine state={state} army={army} />
       <ToolBar state={state} army={army} />
+      <pre style={{position:'absolute', margin:0, padding:0, display:'block', bottom:0, left:0, color:'#ABC'}}>
+        {JSON.stringify(draw, null, 2)}
+      </pre>
     </section>
   )
 }

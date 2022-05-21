@@ -31,7 +31,8 @@ export interface IDrawState {
   draw: number[];
   tool: TOOL;
   shape: SHAPE;
-  flattenPoints: number[];
+  width: number;
+  height: number;
 }
 
 const action = (type:string) => ({type});
