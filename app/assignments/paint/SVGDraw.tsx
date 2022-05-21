@@ -9,6 +9,10 @@ import { useDrawReducer } from './state/useDrawReducer';
 export type Tjlog = (any) => string;
 export const jlog:Tjlog = p => JSON.stringify(p);
 
+
+const BACKGROUND_COLOR:string = '#222';
+const DRAW_COLOR:string = '#AAF';
+
 export interface ISVGDraw {
   width:number;
   height:number;
@@ -72,13 +76,13 @@ export const SVGDraw:FC<ISVGDraw> = ({width = global.innerWidth, height = global
   }
 
   return (
-    <main style={{height}}>
+    <main style={{height, background:BACKGROUND_COLOR}}>
       <svg viewBox={viewBox} style={{position:'absolute', zIndex:1, margin:0, padding:0, display:'block', top:0, left:0}} {...interactions} >
-        <g stroke="#000" fill="none">
+        <g stroke={DRAW_COLOR} fill="none">
           {points.map( (line, key) => <polygon points={line} key={key} />)}
           {draw.length >= 4 && <polygon onClick={console.log} points={draw} strokeDasharray={[1,8]}/>}
         </g>
-        <g stroke="#234" fill="none">
+        <g stroke={DRAW_COLOR} fill="none">
           <polygon points={flattenPoints} />
         </g>
       </svg>

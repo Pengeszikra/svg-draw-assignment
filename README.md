@@ -5,6 +5,8 @@ MVP SVG Drawing application in react.
 
 > Based on :: ```react```, ```typescript```, ```webpack```, ```jest```, ```@flatten-js/core```
 
+[Development story](./app/assignments/paint/__documents__/DEVELOPMENT_STORY.md)
+
 ## Prerequisite:
   - ```npm``` v8.1+
   - ```nodejs``` v17+
