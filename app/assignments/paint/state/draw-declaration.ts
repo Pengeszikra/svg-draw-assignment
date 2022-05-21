@@ -1,3 +1,6 @@
+import { ActionArmy } from "../../../utils/react-troll-declaration";
+import { IDrawState } from "./paintState";
+
 export enum PROGRESS {
   INTRO,
   QUIZ,
@@ -34,4 +37,9 @@ export interface IQuizState {
   shuffledQuestionList: IQuestion[];
   answerIndex: number;
   progress: PROGRESS;
+}
+
+export interface IDrawComponent {
+  state: IDrawState;
+  army: ActionArmy;
 }
