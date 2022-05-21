@@ -7,6 +7,7 @@ import { ToolBar } from './component/ToolBar';
 import { DrawLine } from './component/DrawLine';
 
 const BACKGROUND_COLOR:string = '#222';
+const IS_DEBUG = false;
 
 export const SVGDraw:FC = () => {
 
@@ -26,9 +27,11 @@ export const SVGDraw:FC = () => {
     <section ref={areaRef} style={{width, height, background:BACKGROUND_COLOR, position:'relative'}}>
       <DrawLine state={state} army={army} />
       <ToolBar state={state} army={army} />
-      <pre style={{position:'absolute', margin:0, padding:0, display:'block', bottom:0, left:0, color:'#ABC'}}>
-        {JSON.stringify(draw, null, 2)}
-      </pre>
+      {IS_DEBUG && (
+        <pre style={{position:'absolute', margin:0, padding:0, display:'block', bottom:0, left:0, color:'#ABC'}}>
+          {JSON.stringify(draw, null, 2)}
+        </pre>)
+      }
     </section>
   )
 }

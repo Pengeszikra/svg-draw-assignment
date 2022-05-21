@@ -34,6 +34,9 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
         )
       },
     onMouseUp   : ({clientX, clientY}) => {
+        if (draw.length === 4) {
+          setDraw(([x,y,...r])=> [x,y, ...r, x, y])
+        }
         if (draw.length >= 8) {
           setPoints(p => [...p, [...draw]]);
           setDraw([]);
@@ -51,6 +54,9 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
         )
       },
     onMouseUp   : ({clientX, clientY}) => {
+        if (draw.length === 4) {
+          setDraw(([x,y,...r])=> [x,y, ...r, x, y])
+        }
         if (draw.length >= 10) {
           setPoints(p => [...p, [...draw]]);
           setDraw([]);
