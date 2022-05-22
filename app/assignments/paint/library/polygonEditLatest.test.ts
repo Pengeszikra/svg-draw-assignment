@@ -26,7 +26,7 @@ test ('polygonEditLatest - first dot done', () => {
   );
 });
 
-test ('polygonEditLatest - 2nd dot done', () => {  
+test ('polygonEditLatest - moving 2nd dot', () => {  
   expect (
     mockDrawingLine(nexEventPosition)(
       [1, 2, 4, 5]
@@ -45,17 +45,7 @@ test ('slice - 4', () => {
   );
 });
 
-test ('polygonEditLatest - 3rd dot done', () => {  
-  expect (
-    mockDrawingLine(nexEventPosition)(
-      [1, 2, 3, 4, 5, 6]
-    )
-  ).toStrictEqual(
-    [1, 2, cx, cy, 1, 2]
-  );
-});
-
-test ('polygonEditLatest - 4th dot done', () => {  
+test ('polygonEditLatest - moving 3rd dot', () => {  
   expect (
     mockDrawingLine(nexEventPosition)(
       [1, 2, 3, 4, 5, 6, 7, 8]
@@ -64,3 +54,14 @@ test ('polygonEditLatest - 4th dot done', () => {
     [1, 2, 3, 4, cx, cy, 1, 2]
   );
 });
+
+test ('polygonEditLatest - moving 4th dot', () => {  
+  expect (
+    mockDrawingLine(nexEventPosition)(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    )
+  ).toStrictEqual(
+    [1, 2, 3, 4, 5, 6, cx, cy, 1, 2]
+  );
+});
+

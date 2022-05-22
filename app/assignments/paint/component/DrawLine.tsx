@@ -75,12 +75,14 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
   };
 
   return (
-    <svg viewBox={viewBox} style={{position:'absolute', zIndex:1, margin:0, padding:0, display:'block', top:0, left:0}} 
-      { ...interactionByShape(shape)} 
+    <svg 
+      viewBox={viewBox} 
+      style={{position:'absolute', zIndex:1, margin:0, padding:0, display:'block', top:0, left:0}}
+      { ...interactionByShape(shape) } 
     >
       <DrawedLayerCahce points={points} />
       <g stroke={DRAW_COLOR} fill="none">
-        {draw.length >= 4 && <polygon onClick={console.log} points={draw.toString()} strokeDasharray={[1,8]}/>}
+        {draw.length >= 4 && <polygon points={draw.toString()} strokeDasharray={[1,8]}/>}
       </g>
     </svg>
   )

@@ -12,7 +12,8 @@ I was experience few of them: PhotoShop, Corel Draw, Krita, Adobe Illustrator. S
 
 As guest only Boxy SVG Editor is useful. It is do not ask any registration process, just instant test the application.
 
-## Great Feature from vector drawing application:
+## Great Feature from different drawing application:
+Because I used many of them, I have experience with drawing application as user.
 
   - **spline** (PhotoShop)
   - **complex vector fill** (Flash, AdobeIllustrator)
@@ -32,7 +33,7 @@ As guest only Boxy SVG Editor is useful. It is do not ask any registration proce
 
   This list is so huge! Ans I can add futher great features to 
 
-  ## Key points
+## Key points
 
     - react based application
     - functional paradigm
@@ -41,4 +42,24 @@ As guest only Boxy SVG Editor is useful. It is do not ask any registration proce
     - demo with multi component capability
     - can export svg code
     - mix: flatten.js and React
+    - TDD
 
+## Simple As Possible
+SVG polygon element is fit for any shape drawing. Don't need specific syntax.
+
+```jsx
+  <polygon points={points} />
+```
+
+## Optimize
+React.memo great for optimize rare changed element.
+
+```jsx
+const DrawedLayer:FC<{points:number[]}> = ({points}) => (
+  <g stroke={DRAW_COLOR} fill="none">
+    {points.map( (line, key) => <polygon points={line.toString()} key={key} />)}
+  </g>
+);
+
+export const DrawedLayerCahce = memo(DrawedLayer);
+```
