@@ -1,7 +1,8 @@
-import { FC, memo, useMemo } from 'react';
+import { FC, memo, useMemo, MouseEvent } from 'react';
 import { polygonEditLatest } from '../library/polygonEditLatest';
 import { IDrawComponent } from '../state/draw-declaration';
 import { SHAPE } from '../state/paintState';
+import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
 
 const DRAW_COLOR:string = '#AAF';
 
@@ -11,29 +12,32 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
   const lineInteraction = {
-    onMouseDown : ({clientX, clientY}) => {
-        setDraw([clientX, clientY])
+    onMouseDown : (event:MouseEvent) => {
+        const {eventX, eventY} = getRelativeEvent(event); 
+        setDraw([eventX, eventY])
       },
     onMouseUp   : () => {
         if (draw.length >= 4) setPoints(p => [...p, [...draw]]);
         setDraw([]);
       },
-    onMouseMove : ({clientX, clientY}) => {
-        draw.length >= 2 && setDraw(([x,y]) => [x, y, clientX, clientY])
+    onMouseMove : (event:MouseEvent) => {
+      const {eventX, eventY} = getRelativeEvent(event);
+        draw.length >= 2 && setDraw(([x,y]) => [x, y, eventX, eventY])
       },
   }
 
   // click 
 
   const trinagleInteraction = {
-    onMouseDown : ({clientX, clientY}) => {
+    onMouseDown : (event:MouseEvent) => {
+        const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
         setDraw(Number.isFinite(sx)
-          ? [...draw, clientX, clientY]
-          : [clientX, clientY]
+          ? [...draw, eventX, eventY]
+          : [eventX, eventY]
         )
       },
-    onMouseUp   : ({clientX, clientY}) => {
+    onMouseUp   : () => {
         if (draw.length === 4) {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
@@ -42,18 +46,19 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
           setDraw([]);
         }
       },
-    onMouseMove : polygonEditLatest(setDraw),
+    onMouseMove : (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
   }
 
   const boxInteraction = {
-    onMouseDown : ({clientX, clientY}) => {
+    onMouseDown : (event:MouseEvent) => {
+        const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
         setDraw(Number.isFinite(sx)
-          ? [...draw, clientX, clientY]
-          : [clientX, clientY]
+          ? [...draw, eventX, eventY]
+          : [eventX, eventY]
         )
       },
-    onMouseUp   : ({clientX, clientY}) => {
+    onMouseUp   : () => {
         if (draw.length === 4) {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
@@ -62,7 +67,7 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
           setDraw([]);
         }
       },
-    onMouseMove : polygonEditLatest(setDraw),
+    onMouseMove : (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
   }
 
   const interactionByShape = (currentShape: SHAPE) => {

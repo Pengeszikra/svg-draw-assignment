@@ -22,7 +22,7 @@ const fillStyle = {
 export const DualTest:FC = () => {
   return (
     <main style={mainStyle}>
-      {/* <div style={fillStyle}><SVGDraw /></div> */}
+      <div style={fillStyle}><SVGDraw /></div>
       <div style={fillStyle}><SVGDraw /></div>
     </main>
   );
