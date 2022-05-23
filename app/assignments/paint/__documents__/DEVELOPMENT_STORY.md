@@ -63,3 +63,6 @@ const DrawedLayer:FC<{points:number[]}> = ({points}) => (
 
 export const DrawedLayerCahce = memo(DrawedLayer);
 ```
+
+## Worst Case
+When I realised, the click action on svg polygon element is a quite messy. I going to flatt.js/core direction for a better solution. This decision also lead me to make something SVG independent solution behind the scene.

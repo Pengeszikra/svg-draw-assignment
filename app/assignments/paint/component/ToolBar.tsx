@@ -21,9 +21,9 @@ export const ToolBar:FC<IDrawComponent> = ({state, army}) => {
       <Button onClick={() => selectTool(TOOL.Delete)} variant={tool === TOOL.Delete ? "primary" : "secondary"} size="sm">delete</Button>
       {/* <Button onClick={() => selectTool(TOOL.Select)} variant={tool === TOOL.Select ? "primary" : "secondary"} size="sm">select</Button> */}
       <Button onClick={() => selectTool(TOOL.Draw)} variant={tool === TOOL.Draw ? "primary" : "secondary"} size="sm">draw</Button>
-      <Button onClick={() => selectShape(SHAPE.Line)} variant={shape === SHAPE.Line ? "primary" : "secondary"} size="sm">line</Button>
-      <Button onClick={() => selectShape(SHAPE.Trinagle)} variant={shape === SHAPE.Trinagle ? "primary" : "secondary"} size="sm">trinagle</Button>
-      <Button onClick={() => selectShape(SHAPE.Box)} variant={shape === SHAPE.Box ? "primary" : "secondary"} size="sm">box</Button>
+      <Button onClick={() => {selectShape(SHAPE.Line); selectTool(TOOL.Draw)}} variant={shape === SHAPE.Line && tool === TOOL.Draw ? "primary" : "secondary"} size="sm">line</Button>
+      <Button onClick={() => {selectShape(SHAPE.Trinagle); selectTool(TOOL.Draw)}} variant={shape === SHAPE.Trinagle && tool === TOOL.Draw ? "primary" : "secondary"} size="sm">trinagle</Button>
+      <Button onClick={() => {selectShape(SHAPE.Box); selectTool(TOOL.Draw)}} variant={shape === SHAPE.Box && tool === TOOL.Draw ? "primary" : "secondary"} size="sm">box</Button>
     </section>
   );
 }

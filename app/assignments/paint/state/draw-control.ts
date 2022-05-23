@@ -44,9 +44,9 @@ export const drawInitialState:IDrawState = {
 export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
 
 export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Action) => {
-  if (![SET_DRAW].includes(type))  console.log(type, payload, state)
+  // if (![SET_DRAW].includes(type))  console.log(type, payload, state)
   switch (type) {
-    case SELECT_TOOL : return {...state, tool : payload }
+    case SELECT_TOOL : return {...state, draw:[], tool : payload }
     case SELECT_SHAPE : return {...state, shape : payload }
     case START_DRAW : return {...state, _ : payload }
     case FINIDH_DRAW : return {...state, _ : payload }

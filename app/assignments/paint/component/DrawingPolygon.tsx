@@ -1,13 +1,13 @@
 import { FC, memo, useMemo, MouseEvent } from 'react';
 import { polygonEditLatest } from '../library/polygonEditLatest';
 import { IDrawComponent } from '../state/draw-declaration';
-import { SHAPE } from '../state/paintState';
+import { SHAPE, TOOL } from '../state/paintState';
 import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
 
 const DRAW_COLOR:string = '#AAF';
 
-export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
-  const { points, draw, width, height, shape} = state;
+export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
+  const { points, draw, width, height, shape, tool} = state;
   const { setPoints, setDraw } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
@@ -79,13 +79,19 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
     }
   };
 
+  const handleToolOnClick = (event:MouseEvent) => { 
+    // if (![TOOL.Edit, TOOL.Delete].includes(tool)) return;
+    const {target} = event;
+    console.warn('edit :: ',target);
+  };
+
   return (
     <svg 
       viewBox={viewBox} 
       style={{position:'absolute', zIndex:1, margin:0, padding:0, display:'block', top:0, left:0}}
-      { ...interactionByShape(shape) } 
+      { ...(tool === TOOL.Draw ? interactionByShape(shape) : {}) } 
     >
-      <DrawedLayerCahce points={points} />
+      <DrawedLayerCahce points={points} handleToolOnClick={handleToolOnClick} />
       <g stroke={DRAW_COLOR} fill="none">
         {draw.length >= 4 && <polygon points={draw.toString()} strokeDasharray={[1,8]}/>}
       </g>
@@ -93,9 +99,9 @@ export const DrawLine:FC<IDrawComponent> = ({state, army}) => {
   )
 }
 
-const DrawedLayer:FC<{points:number[]}> = ({points}) => (
+const DrawedLayer:FC<{points:number[], handleToolOnClick:(e:MouseEvent)=>any}> = ({points, handleToolOnClick}) => (
   <g stroke={DRAW_COLOR} fill="none">
-    {points.map( (line, key) => <polygon points={line.toString()} key={key} />)}
+    {points.map( (line, key) => <polygon onClick={handleToolOnClick} points={line.toString()} key={key} />)}
   </g>
 );
 
