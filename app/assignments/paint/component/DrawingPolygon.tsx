@@ -1,15 +1,17 @@
-import { FC, memo, useMemo, MouseEvent } from 'react';
+import { FC, memo, useMemo, MouseEvent, useEffect } from 'react';
+import Flatten from '@flatten-js/core';
 import { polygonEditLatest } from '../library/polygonEditLatest';
 import { IDrawComponent, IPolygonItem } from '../state/draw-declaration';
 import { SHAPE, TOOL } from '../state/paintState';
 import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
 import { createPolygonItem } from '../library/createPolygonItem';
+import { chunk } from '../library/chunk';
 
 const DRAW_COLOR:string = '#AAF';
 
 export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
-  const { items, draw, width, height, shape, tool} = state;
-  const { setDraw, addPolygon, deleteItem, editItem } = army;
+  const { items, draw, width, height, shape, tool, underEdit, editBox} = state;
+  const { setDraw, addPolygon, deleteItem, editItem, setEditBox } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
   const lineInteraction = {
@@ -89,6 +91,28 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
     }
   };
 
+  useEffect(() => {
+    if (!underEdit) {
+      setEditBox([]);
+      return;
+    };
+
+    const {point, Polygon} = Flatten;
+    const {points} = underEdit;
+
+    const middlePoint = point(width/2, height/2);
+    const pointList = chunk(2)(points).map(p => point(...p));
+
+    const editPolygon = new Polygon(pointList);
+
+    const [dist, {ps, pe}] = middlePoint.distanceTo(editPolygon);
+
+    // console.warn(editPolygon);
+    // console.warn(dist, ps, pe);
+
+    (ps && pe) && setEditBox([ps.x, ps.y, pe.x, pe.y]);
+  }, [underEdit])
+
   return (
     <svg 
       viewBox={viewBox} 
@@ -96,6 +120,9 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
       { ...(tool === TOOL.Draw ? interactionByShape(shape) : {}) } 
     >
       <DrawedLayerCahce items={items} handleToolOnClick={handleToolOnClick} />
+      {Array.isArray(editBox) && editBox.length && (
+        <polygon points={editBox.toString()} strokeDasharray={[2,8]} />
+      )}
       <g stroke={DRAW_COLOR} fill="none">
         {draw.length >= 4 && <polygon points={draw.toString()} strokeDasharray={[1,8]}/>}
       </g>
@@ -103,9 +130,15 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   )
 }
 
-const DrawedLayer:FC<{items:IPolygonItem[], handleToolOnClick:(e:MouseEvent)=>any}> = ({items, handleToolOnClick}) => (
+// const DrawedLayer:FC<{items:IPolygonItem[], handleToolOnClick:(e:MouseEvent)=>any}> = ({items, handleToolOnClick}) => (
+//   <g stroke={DRAW_COLOR} fill="none">
+//     {items.map( ({id, points, fill}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} id={id} fill={fill} />)}
+//   </g>
+// );
+
+const DrawedLayer:FC<{items:IPolygonItem[]}> = ({items}) => (
   <g stroke={DRAW_COLOR} fill="none">
-    {items.map( ({id, points, fill}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} id={id} fill={fill} />)}
+    {items.map( ({id, points, fill}) => <polygon points={points.toString()} key={id} id={id} fill={fill} />)}
   </g>
 );
 

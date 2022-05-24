@@ -9,14 +9,6 @@ export const
   SELECT_TOOL = action('select-tool'),
   SELECT_SHAPE = action('select-shape'),
 
-  START_DRAW = action('start-draw'),
-  FINIDH_DRAW = action('finish-draw'),
-  CANCEL_DRAW = action('cancel-draw'),
-
-  START_SHAPE_MOVE = action('start-shape-move'),
-  FINISH_SHAPE_MOVE = action('finish-shape-move'),
-  CANCEL_SHAPE_MOVE = action('cancel-shape-move'),
-
   UNDO_LAST_DRAW = action('undo-last-draw'),
   CLEAR_ALL = action('clear-all'),
 
@@ -25,6 +17,8 @@ export const
 
   REPLAY_DRAWING = action('replay-drawing'),
   STOP_REPLAY = action('stop-replay'),
+  
+  SET_EDIT_BOX = action('set-edit-box'),
   
   CHANGE_DIMENSION = action('change-dimension'),
   SET_DRAW = action('set-draw'),
@@ -42,6 +36,7 @@ export const drawInitialState:IDrawState = {
   height: 300,
   items: [],
   underEdit: null,
+  editBox: [],
 }
 
 export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
@@ -49,22 +44,11 @@ export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
 export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Action) => {
   // if (![SET_DRAW].includes(type))  console.log(type, payload)
   switch (type) {
-    case SELECT_TOOL : return {...state, draw:[], underEdit:null, tool : payload }
+    case SELECT_TOOL : return {...state, editBox:[], draw:[], underEdit:null, tool : payload }
     case SELECT_SHAPE : return {...state, shape : payload }
-
-    case START_DRAW : return {...state, _ : payload }
-    case FINIDH_DRAW : return {...state, _ : payload }
-    case CANCEL_DRAW : return {...state, _ : payload }
-    case START_SHAPE_MOVE : return {...state, _ : payload }
-    case FINISH_SHAPE_MOVE : return {...state, _ : payload }
-    case CANCEL_SHAPE_MOVE : return {...state, _ : payload }
-    case DELETE_SHAPE : return {...state, _ : payload }
-    case DELETE_ALL_SHAPE : return {...state, _ : payload }
-    case REPLAY_DRAWING : return {...state, _ : payload }
-    case STOP_REPLAY : return {...state, _ : payload }
-
-    case UNDO_LAST_DRAW : return {...state, draw:[], items: state.items.slice(0, state.items.length - 1) }
-    case CLEAR_ALL : return {...state, draw:[], items:[]}
+    case SET_EDIT_BOX : return {...state, editBox : payload }
+    case UNDO_LAST_DRAW : return {...state, draw:[], underEdit: null, items: state.items.slice(0, state.items.length - 1) }
+    case CLEAR_ALL : return {...state, draw:[], items:[], underEdit: null}
     case CHANGE_DIMENSION : return {...state, width: payload?.width, height: payload?.height }
     case SET_DRAW : return {...state, draw : likeUseState(payload, state.draw) }
     case SET_POLYGON_POINTS : {

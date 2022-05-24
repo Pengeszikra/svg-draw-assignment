@@ -22,6 +22,7 @@ export type TPolygon = number[];
 export interface IPolygonItem {
   id: string;
   points: TPolygon;
+  fill?: string;
 }
 
 export enum VisualElementType{
@@ -45,4 +46,5 @@ export interface IDrawState {
   height: number;
   items: IPolygonItem[];
   underEdit: Nullable<IPolygonItem>;
+  editBox: number[];
 }
