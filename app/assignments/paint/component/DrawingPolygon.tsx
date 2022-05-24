@@ -11,7 +11,7 @@ const DRAW_COLOR:string = '#AAF';
 const chunk2 = chunk(2);
 
 export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
-  const { items, draw, width, height, shape, tool, underEdit, editBox} = state;
+  const { items, draw, width, height, shape, tool, underEdit, editBox, _focus_} = state;
   const { setDraw, addPolygon, deleteItem, editItem, setEditBox, setFocus } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
@@ -169,17 +169,12 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
       { Array.isArray(editBox) && editBox.length >= 2 && (
         <g stroke={"red"} fill="none">
           <circle cx={editBox[0]} cy={editBox[1]} r={5} />
+          {Array.isArray(_focus_) && _focus_.map(({id, distance:[_, {ps, pe}]}) => (<polygon key={'distance-'+id} points={[ps.x, ps.y, pe.x, pe.y]} />))}
         </g>
       )}
     </svg>
   )
 }
-
-// const DrawedLayer:FC<{items:IPolygonItem[], handleToolOnClick:(e:MouseEvent)=>any}> = ({items, handleToolOnClick}) => (
-//   <g stroke={DRAW_COLOR} fill="none">
-//     {items.map( ({id, points, fill}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} id={id} fill={fill} />)}
-//   </g>
-// );
 
 const DrawedLayer:FC<{items:IPolygonItem[]}> = ({items}) => (
   <g stroke={DRAW_COLOR} fill="none">
