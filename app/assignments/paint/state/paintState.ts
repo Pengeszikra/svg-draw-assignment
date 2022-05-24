@@ -43,7 +43,6 @@ export interface IVisualItem {
 
 
 export interface IDrawState {
-  points: number[];
   draw: number[];
   tool: TOOL;
   shape: SHAPE;

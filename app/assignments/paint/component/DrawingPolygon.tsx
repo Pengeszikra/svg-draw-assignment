@@ -1,6 +1,6 @@
 import { FC, memo, useMemo, MouseEvent } from 'react';
 import { polygonEditLatest } from '../library/polygonEditLatest';
-import { IDrawComponent } from '../state/draw-declaration';
+import { IDrawComponent, IPolygonItem } from '../state/draw-declaration';
 import { SHAPE, TOOL } from '../state/paintState';
 import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
 import { createPolygonItem } from '../library/createPolygonItem';
@@ -8,8 +8,8 @@ import { createPolygonItem } from '../library/createPolygonItem';
 const DRAW_COLOR:string = '#AAF';
 
 export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
-  const { points, draw, width, height, shape, tool} = state;
-  const { setPoints, setDraw, addPolygon } = army;
+  const { items, draw, width, height, shape, tool} = state;
+  const { setDraw, addPolygon } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
   const lineInteraction = {
@@ -20,7 +20,6 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
     onMouseUp   : () => {
         if (draw.length >= 4) {
           addPolygon(createPolygonItem(draw));
-          setPoints(p => [...p, [...draw]])
         };
         setDraw([]);
       },
@@ -33,7 +32,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   // click 
 
   const trinagleInteraction = {
-    onMouseDown : (event:MouseEvent) => {
+    onMouseDown: (event:MouseEvent) => {
         const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
         setDraw(Number.isFinite(sx)
@@ -41,21 +40,20 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
           : [eventX, eventY]
         )
       },
-    onMouseUp   : () => {
+    onMouseUp: () => {
         if (draw.length === 4) {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
         if (draw.length >= 8) {
           addPolygon(createPolygonItem(draw));
-          setPoints(p => [...p, [...draw]]);
           setDraw([]);
         }
       },
-    onMouseMove : (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
+    onMouseMove: (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
   }
 
   const boxInteraction = {
-    onMouseDown : (event:MouseEvent) => {
+    onMouseDown: (event:MouseEvent) => {
         const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
         setDraw(Number.isFinite(sx)
@@ -63,17 +61,16 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
           : [eventX, eventY]
         )
       },
-    onMouseUp   : () => {
+    onMouseUp: () => {
         if (draw.length === 4) {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
         if (draw.length >= 10) {
           addPolygon(createPolygonItem(draw));
-          setPoints(p => [...p, [...draw]]);
           setDraw([]);
         }
       },
-    onMouseMove : (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
+    onMouseMove: (event:MouseEvent) => polygonEditLatest(setDraw)(convertRelativeEventToClient(event))
   }
 
   const interactionByShape = (currentShape: SHAPE) => {
@@ -97,7 +94,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
       style={{position:'absolute', zIndex:1, margin:0, padding:0, display:'block', top:0, left:0}}
       { ...(tool === TOOL.Draw ? interactionByShape(shape) : {}) } 
     >
-      <DrawedLayerCahce points={points} handleToolOnClick={handleToolOnClick} />
+      <DrawedLayerCahce items={items} handleToolOnClick={handleToolOnClick} />
       <g stroke={DRAW_COLOR} fill="none">
         {draw.length >= 4 && <polygon points={draw.toString()} strokeDasharray={[1,8]}/>}
       </g>
@@ -105,9 +102,9 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   )
 }
 
-const DrawedLayer:FC<{points:number[], handleToolOnClick:(e:MouseEvent)=>any}> = ({points, handleToolOnClick}) => (
+const DrawedLayer:FC<{items:IPolygonItem[], handleToolOnClick:(e:MouseEvent)=>any}> = ({items, handleToolOnClick}) => (
   <g stroke={DRAW_COLOR} fill="none">
-    {points.map( (line, key) => <polygon onClick={handleToolOnClick} points={line.toString()} key={key} />)}
+    {items.map( ({id, points}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} />)}
   </g>
 );
 
