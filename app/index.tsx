@@ -3,10 +3,10 @@ import { render } from "react-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { MultipleExample } from './assignments/paint/MultipleExample';
 
-const renderToApp = (application:React.FC) => render(application, document.getElementById('app'));
+const renderToAppId = (application:React.ReactElement<any, any>) => render(application, document.getElementById('app'));
 
-renderToApp((
+renderToAppId((
   <React.StrictMode>
-    <MultipleExample amount = {4}/>
+    <MultipleExample amount = {1}/>
   </React.StrictMode>)
 );

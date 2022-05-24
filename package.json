@@ -1,7 +1,7 @@
 {
   "name": "trivia-challenge",
   "version": "0.0.1",
-  "description": "test task for Cheepers",
+  "description": "assignment :: 2022 :: drawing application",
   "main": "index.tsx",
   "author": "vivo.peter@protonmail.com",
   "license": "MIT",
