@@ -47,4 +47,5 @@ export interface IDrawState {
   items: IPolygonItem[];
   underEdit: Nullable<IPolygonItem>;
   editBox: number[];
+  _focus_: any,
 }

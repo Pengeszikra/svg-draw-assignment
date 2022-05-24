@@ -19,6 +19,7 @@ export const
   STOP_REPLAY = action('stop-replay'),
   
   SET_EDIT_BOX = action('set-edit-box'),
+  SET_FOCUS = action('set-focus'),
   
   CHANGE_DIMENSION = action('change-dimension'),
   SET_DRAW = action('set-draw'),
@@ -37,6 +38,7 @@ export const drawInitialState:IDrawState = {
   items: [],
   underEdit: null,
   editBox: [],
+  _focus_: null,
 }
 
 export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
@@ -47,6 +49,7 @@ export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Actio
     case SELECT_TOOL : return {...state, editBox:[], draw:[], underEdit:null, tool : payload }
     case SELECT_SHAPE : return {...state, shape : payload }
     case SET_EDIT_BOX : return {...state, editBox : payload }
+    case SET_FOCUS : return {...state, _focus_ : payload }
     case UNDO_LAST_DRAW : return {...state, draw:[], underEdit: null, items: state.items.slice(0, state.items.length - 1) }
     case CLEAR_ALL : return {...state, draw:[], items:[], underEdit: null}
     case CHANGE_DIMENSION : return {...state, width: payload?.width, height: payload?.height }
