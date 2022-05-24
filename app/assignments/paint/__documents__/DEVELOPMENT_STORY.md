@@ -66,3 +66,16 @@ export const DrawedLayerCahce = memo(DrawedLayer);
 
 ## Worst Case
 When I realised, the click action on svg polygon element is a quite messy. I going to flatt.js/core direction for a better solution. This decision also lead me to make something SVG independent solution behind the scene.
+
+
+### Multi instance DEMO
+
+```jsx
+renderToAppId((
+  <React.StrictMode>
+    <MultipleExample amount = {4}/>
+  </React.StrictMode>)
+);
+```
+
+![multi instance demo](./distance-of-4-instance.png)

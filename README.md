@@ -5,7 +5,17 @@ MVP SVG Drawing application in react.
 
 > Based on :: ```react```, ```typescript```, ```webpack```, ```jest```, ```@flatten-js/core```
 
-[Development story](./app/assignments/paint/__documents__/DEVELOPMENT_STORY.md)
+![closest point](./app/assignments/paint/__documents__/closest-point.png)
+
+Until first technical issue this development going to made a requested drawing application. This issue was the ```line selection problem```. Because line is so thick to hard click on it. My basic ide was I do not any event listener directly to each SVG element, which is going to problematic by number of element.
+
+I added ```flatten-js/core``` to the project. In that way I do not restrict to DOM elements. But able to based my interaction to ```geometry calculation```.
+
+As ```distance``` function show in live to draw closest point of each polygon. Red one is the closest.
+
+Another technical demo of this application is the ability to works as ```independent react component which``` one is do not have outer dependency.
+
+Longer version: [Development story](./app/assignments/paint/__documents__/DEVELOPMENT_STORY.md)
 
 ## Prerequisite:
   - ```npm``` v8.1+

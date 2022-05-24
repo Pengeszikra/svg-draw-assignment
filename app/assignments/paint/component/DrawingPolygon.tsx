@@ -6,6 +6,14 @@ import { SHAPE, TOOL } from '../state/paintState';
 import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
 import { createPolygonItem } from '../library/createPolygonItem';
 import { chunk } from '../library/chunk';
+import { useCallback } from 'react';
+
+const {point, Polygon} = Flatten;
+
+interface IFocusItem {
+  id: string;
+  distance: [number, Flatten.Segment];
+}
 
 const DRAW_COLOR:string = '#AAF';
 const chunk2 = chunk(2);
@@ -96,8 +104,6 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
     onMouseMove: (event:MouseEvent) => {
       const {eventX, eventY} = getRelativeEvent(event);
       if (tool === TOOL.Edit) {
-        const {point, Polygon} = Flatten;
-
         const hoverPoint = point(eventX, eventY);
 
         const flattenShapeList = items.map(item => {
@@ -109,12 +115,14 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
           }
         });
 
-        const distanceList = flattenShapeList.map(({id, shape}) => {
+        const distanceList:IFocusItem[] = flattenShapeList.map(({id, shape}) => {
           return {
             id, 
             distance: shape.distanceTo(hoverPoint)
           }
         });
+
+        distanceList.sort((a,b) => a.distance[0] - b.distance[0]);
 
         setFocus(distanceList);
 
@@ -122,31 +130,6 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
       }
     }
   }
-
-
-  useEffect(() => {
-    return;
-
-    if (!underEdit) {
-      setEditBox([]);
-      return;
-    };
-
-    const {point, Polygon} = Flatten;
-    const {points} = underEdit;
-
-    const middlePoint = point(width/2, height/2);
-    const pointList = chunk(2)(points).map(p => point(...p));
-
-    const editPolygon = new Polygon(pointList);
-
-    const [dist, {ps, pe}] = middlePoint.distanceTo(editPolygon);
-
-    // console.warn(editPolygon);
-    // console.warn(dist, ps, pe);
-
-    (ps && pe) && setEditBox([ps.x, ps.y, pe.x, pe.y]);
-  }, [underEdit])
 
   return (
     <svg 
@@ -167,9 +150,11 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
         {draw.length >= 4 && <polygon points={draw.toString()} strokeDasharray={[1,8]}/>}
       </g>
       { Array.isArray(editBox) && editBox.length >= 2 && (
-        <g stroke={"red"} fill="none">
-          <circle cx={editBox[0]} cy={editBox[1]} r={5} />
-          {Array.isArray(_focus_) && _focus_.map(({id, distance:[_, {ps, pe}]}) => (<polygon key={'distance-'+id} points={[ps.x, ps.y, pe.x, pe.y]} />))}
+        <g fill="none">
+          <circle cx={editBox[0]} cy={editBox[1]} r={5} stroke="red" />
+          {Array.isArray(_focus_) && _focus_.map(({id, distance:[_, {ps, pe}]}, index) => (
+            <polygon key={'distance-'+id} points={[ps.x, ps.y, pe.x, pe.y]} stroke={index === 0 ? "red" : "#444" }/>
+          ))}
         </g>
       )}
     </svg>
