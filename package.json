@@ -2,7 +2,7 @@
   "name": "trivia-challenge",
   "version": "0.0.1",
   "description": "test task for Cheepers",
-  "main": "index.js",
+  "main": "index.tsx",
   "author": "vivo.peter@protonmail.com",
   "license": "MIT",
   "scripts": {

@@ -3,12 +3,13 @@ import { polygonEditLatest } from '../library/polygonEditLatest';
 import { IDrawComponent } from '../state/draw-declaration';
 import { SHAPE, TOOL } from '../state/paintState';
 import { getRelativeEvent, convertRelativeEventToClient } from '../library/getRelativeEvent';
+import { createPolygonItem } from '../library/createPolygonItem';
 
 const DRAW_COLOR:string = '#AAF';
 
 export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   const { points, draw, width, height, shape, tool} = state;
-  const { setPoints, setDraw } = army;
+  const { setPoints, setDraw, addPolygon } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
   const lineInteraction = {
@@ -17,7 +18,10 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
         setDraw([eventX, eventY])
       },
     onMouseUp   : () => {
-        if (draw.length >= 4) setPoints(p => [...p, [...draw]]);
+        if (draw.length >= 4) {
+          addPolygon(createPolygonItem(draw));
+          setPoints(p => [...p, [...draw]])
+        };
         setDraw([]);
       },
     onMouseMove : (event:MouseEvent) => {
@@ -42,6 +46,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
         if (draw.length >= 8) {
+          addPolygon(createPolygonItem(draw));
           setPoints(p => [...p, [...draw]]);
           setDraw([]);
         }
@@ -63,6 +68,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
           setDraw(([x,y,...r])=> [x,y, ...r, x, y])
         }
         if (draw.length >= 10) {
+          addPolygon(createPolygonItem(draw));
           setPoints(p => [...p, [...draw]]);
           setDraw([]);
         }

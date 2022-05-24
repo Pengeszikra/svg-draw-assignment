@@ -1,45 +1,26 @@
 import { ActionArmy } from "../../../utils/react-troll-declaration";
 import { IDrawState } from "./paintState";
 
-export enum PROGRESS {
-  INTRO,
-  QUIZ,
-  RESULTS,
-}
-
-export interface IQuestionSource {
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
-}
-
-export type TAnswerId = string;
-
-export interface IAnswer {
-  answerId: TAnswerId;
-  answer: string;
-}
-
-export interface IQuestion {
-  questionId: string;
-  question: string;
-  category: string;
-  shuffledAnswerList: IAnswer[];
-}
-
-export interface IQuizState {
-  sourceList: IQuestionSource[];
-  correctAnswerList: TAnswerId[];
-  solutionList: TAnswerId[];
-  shuffledQuestionList: IQuestion[];
-  answerIndex: number;
-  progress: PROGRESS;
-}
-
 export interface IDrawComponent {
   state: IDrawState;
   army: ActionArmy;
 }
+
+export type TPointList = number[];
+
+export interface IPolygonItem {
+  id: string;
+  points: TPointList;
+}
+
+export enum VisualElementType{
+  LINE,
+  POLYGON,
+  GROUP,
+}
+
+export interface IVisualItem {
+  id: string;
+  type: VisualElementType;
+}
+

@@ -1,7 +1,7 @@
 import { actionFactory, kebabToCamelCase } from "react-troll";
 import { likeUseState } from "../../../utils/likeUseState";
 import { Action } from "../../../utils/react-troll-declaration";
-import { IDrawState, SHAPE, TOOL } from "./paintState";
+import { IDrawState, IPolygonItem, SHAPE, TOOL } from "./paintState";
 
 export const [drawActionsSet, action] = actionFactory(kebabToCamelCase);
 
@@ -28,6 +28,8 @@ export const
   
   CHANGE_DIMENSION = action('change-dimension'),
   SET_DRAW = action('set-draw'),
+  ADD_POLYGON = action('add-polygon'),
+  SET_POLYGON_POINTS = action('set-polygon-points'),
   SET_POINTS = action('set-points')
 ;
 
@@ -36,15 +38,15 @@ export const drawInitialState:IDrawState = {
   draw: [],
   tool: TOOL.Draw,
   shape: SHAPE.Line,
-  image: [],
   width: 300,
-  height: 300
+  height: 300,
+  items: [],
 }
 
 export type TDrawReducer = (state:IDrawState, action:Action ) => IDrawState;
 
 export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Action) => {
-  // if (![SET_DRAW].includes(type))  console.log(type, payload, state)
+  if (![SET_DRAW].includes(type))  console.log(type, payload, state)
   switch (type) {
     case SELECT_TOOL : return {...state, draw:[], tool : payload }
     case SELECT_SHAPE : return {...state, shape : payload }
@@ -63,6 +65,19 @@ export const drawReducer:TDrawReducer = (state:IDrawState, {type, payload}:Actio
     case CHANGE_DIMENSION : return {...state, width: payload?.width, height: payload?.height }
     case SET_DRAW : return {...state, draw : likeUseState(payload, state.draw) }
     case SET_POINTS : return {...state, points : likeUseState(payload, state.points) }
+    case SET_POLYGON_POINTS : {
+      const seek:IPolygonItem = payload;
+      const polygonItem = state.items.find(item => item.id === seek?.id);
+      if (!polygonItem) return state;
+      return state.items.map(item => item === polygonItem ? {...item, points: seek.points} : item);
+    }
+    case ADD_POLYGON : {
+      const polygonItem:IPolygonItem = payload;
+      return polygonItem?.id && Array.isArray(polygonItem?.points) 
+        ? {...state, items:  [...state.items, polygonItem] }
+        : state
+      ;
+    }
 
     default: return state;
   }

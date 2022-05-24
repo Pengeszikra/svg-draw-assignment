@@ -17,22 +17,39 @@ export enum SHAPE {
   Circle,
 }
 
-export type TCoord = [number, number]
+// export type TCoord = [number, number]
+// 
+// export type TLine = [TCoord, TCoord]
+// 
+// export type TTrinagle = [TCoord, TCoord, TCoord]
+// 
+export type TPolygon = number[];
 
-export type TLine = [TCoord, TCoord]
+export interface IPolygonItem {
+  id: string;
+  points: TPolygon;
+}
 
-export type TTrinagle = [TCoord, TCoord, TCoord]
+export enum VisualElementType{
+  LINE,
+  POLYGON,
+  GROUP,
+}
 
-export type TPolygon = Array<TCoord>
+export interface IVisualItem {
+  id: string;
+  type: VisualElementType;
+}
+
 
 export interface IDrawState {
-  image: Array<SHAPE>;
   points: number[];
   draw: number[];
   tool: TOOL;
   shape: SHAPE;
   width: number;
   height: number;
+  items: IPolygonItem[];
 }
 
 const action = (type:string) => ({type});
