@@ -9,7 +9,7 @@ const DRAW_COLOR:string = '#AAF';
 
 export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   const { items, draw, width, height, shape, tool} = state;
-  const { setDraw, addPolygon } = army;
+  const { setDraw, addPolygon, deleteItem, editItem } = army;
 
   const viewBox = useMemo(() => `0 0 ${width} ${height}`, [width, height]);
   const lineInteraction = {
@@ -29,13 +29,11 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
       },
   }
 
-  // click 
-
   const trinagleInteraction = {
     onMouseDown: (event:MouseEvent) => {
         const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
-        setDraw(Number.isFinite(sx)
+        setDraw(Number.isFinite(sx) && Number.isFinite(sy)
           ? [...draw, eventX, eventY]
           : [eventX, eventY]
         )
@@ -56,7 +54,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
     onMouseDown: (event:MouseEvent) => {
         const {eventX, eventY} = getRelativeEvent(event);
         const [sx, sy] = draw;
-        setDraw(Number.isFinite(sx)
+        setDraw(Number.isFinite(sx) && Number.isFinite(sy)
           ? [...draw, eventX, eventY]
           : [eventX, eventY]
         )
@@ -83,9 +81,12 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
   };
 
   const handleToolOnClick = (event:MouseEvent) => { 
-    // if (![TOOL.Edit, TOOL.Delete].includes(tool)) return;
-    const {target} = event;
-    console.warn('edit :: ',target);
+    if (tool === TOOL.Delete && event?.target?.id) {
+      deleteItem({id:event.target.id});
+    }
+    if (tool === TOOL.Edit && event?.target?.id) {
+      editItem({id:event.target.id});
+    }
   };
 
   return (
@@ -104,7 +105,7 @@ export const DrawingPolygon:FC<IDrawComponent> = ({state, army}) => {
 
 const DrawedLayer:FC<{items:IPolygonItem[], handleToolOnClick:(e:MouseEvent)=>any}> = ({items, handleToolOnClick}) => (
   <g stroke={DRAW_COLOR} fill="none">
-    {items.map( ({id, points}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} />)}
+    {items.map( ({id, points, fill}) => <polygon onClick={handleToolOnClick} points={points.toString()} key={id} id={id} fill={fill} />)}
   </g>
 );
 

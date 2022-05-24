@@ -17,12 +17,6 @@ export enum SHAPE {
   Circle,
 }
 
-// export type TCoord = [number, number]
-// 
-// export type TLine = [TCoord, TCoord]
-// 
-// export type TTrinagle = [TCoord, TCoord, TCoord]
-// 
 export type TPolygon = number[];
 
 export interface IPolygonItem {
@@ -41,6 +35,7 @@ export interface IVisualItem {
   type: VisualElementType;
 }
 
+export type Nullable<T> = T | undefined | null;
 
 export interface IDrawState {
   draw: number[];
@@ -49,26 +44,5 @@ export interface IDrawState {
   width: number;
   height: number;
   items: IPolygonItem[];
+  underEdit: Nullable<IPolygonItem>;
 }
-
-const action = (type:string) => ({type});
-
-export const 
-  SELECT_TOOL = action('select-tool'),
-  SELECT_SHAPE = action('select-shape'),
-
-  START_DRAW = action('start-draw'),
-  FINIDH_DRAW = action('finish-draw'),
-  CANCEL_DRAW = action('cancel-draw'),
-
-  START_SHAPE_MOVE = action('start-shape-move'),
-  FINISH_SHAPE_MOVE = action('finish-shape-move'),
-  CANCEL_SHAPE_MOVE = action('cancel-shape-move'),
-
-  UNDO_LAST_DRAW = action('undo-last-draw'),
-  
-  DELETE_SHAPE = action('delete-shape'),
-  DELETE_ALL_SHAPE = action('delete-all_shape'),
-  
-  REPLAY_DRAWING = action('replay-drawing'),
-  STOP_REPLAY = action('stop-replay')

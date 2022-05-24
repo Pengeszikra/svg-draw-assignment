@@ -11,6 +11,7 @@ export type TPointList = number[];
 export interface IPolygonItem {
   id: string;
   points: TPointList;
+  fill?: string;
 }
 
 export enum VisualElementType{
